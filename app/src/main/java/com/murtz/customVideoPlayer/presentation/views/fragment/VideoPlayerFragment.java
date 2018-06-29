@@ -97,6 +97,7 @@ public class VideoPlayerFragment extends Fragment {
 
         parentView = inflater.inflate(R.layout.fragment_video_player, container, false);
         parentView.findViewById(R.id.closeBtn).setOnClickListener(clickListener);
+        parentView.findViewById(R.id.showListBtn).setOnClickListener(clickListener);
         return parentView;
     }
 
@@ -179,10 +180,13 @@ public class VideoPlayerFragment extends Fragment {
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            switch (R.id.closeBtn) {
+            switch (v.getId()) {
                 case R.id.closeBtn:
                     releasePlayer();
                     activity.finish();
+                    break;
+
+                case R.id.showListBtn:
                     break;
             }
         }
