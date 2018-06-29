@@ -104,17 +104,14 @@ public class VideoPlayerFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (Util.SDK_INT > 23) {
-            initializePlayer();
-        }
+        initializePlayer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if ((Util.SDK_INT <= 23 || player == null)) {
-            initializePlayer();
-        }
+//            initializePlayer();
+        startPlayer();
     }
 
     /**
@@ -149,20 +146,26 @@ public class VideoPlayerFragment extends Fragment {
         });
     }
 
+    private void playPausePlayer() {
+        if (player != null)
+            player.setPlayWhenReady(!player.getPlayWhenReady());
+    }
+
+    private void startPlayer() {
+        if (player != null)
+            player.setPlayWhenReady(true);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
+        playPausePlayer();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
+        releasePlayer();
     }
 
     /**
@@ -187,6 +190,7 @@ public class VideoPlayerFragment extends Fragment {
                     break;
 
                 case R.id.showListBtn:
+//                    parentView.findViewById(R.id.overlayView).setVisibility(View.VISIBLE);
                     break;
             }
         }
