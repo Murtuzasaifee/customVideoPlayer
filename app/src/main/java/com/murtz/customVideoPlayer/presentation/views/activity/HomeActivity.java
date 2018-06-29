@@ -12,9 +12,9 @@ import com.murtz.customVideoPlayer.presentation.views.fragment.HomeFragment;
 
 import java.lang.ref.WeakReference;
 
-public class MainActivity extends BaseActivity implements HomeFragment.FragmentInteractionListener{
+public class HomeActivity extends BaseActivity implements HomeFragment.FragmentInteractionListener{
 
-    private WeakReference<MainActivity> mainActivityWR;
+    private WeakReference<HomeActivity> mainActivityWR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
