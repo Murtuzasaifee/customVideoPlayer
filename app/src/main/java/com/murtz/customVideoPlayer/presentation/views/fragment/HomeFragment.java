@@ -73,4 +73,11 @@ public class HomeFragment extends Fragment {
            listener.openVideoPlayer("");
         }
     };
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        clickListener = null;
+        activity =null;
+    }
 }
