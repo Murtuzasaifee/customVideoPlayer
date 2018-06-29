@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">CustomVideoPlayer</string>
+    <string name="app_name">Custom Video Player</string>
+    <string name="openVideoPlayer">Open Video Player</string>
 </resources>
