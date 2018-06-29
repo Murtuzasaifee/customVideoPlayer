@@ -52,8 +52,7 @@ public class VideoPlayerFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public interface FragmentInteractionListener{
-        void openVideoPlayer(String videoUrl);
+    public interface FragmentInteractionListener {
     }
 
     @Override
@@ -81,7 +80,7 @@ public class VideoPlayerFragment extends Fragment {
         shouldAutoPlay = true;
         bandwidthMeter = new DefaultBandwidthMeter();
         mediaDataSourceFactory = new DefaultDataSourceFactory(activity, Util.getUserAgent(activity, getString(R.string.app_name)), (TransferListener<? super DataSource>) bandwidthMeter);
-        ivHideControllerButton =  parentView.findViewById(R.id.exo_controller);
+        ivHideControllerButton = parentView.findViewById(R.id.exo_controller);
     }
 
     @Override
@@ -97,6 +96,7 @@ public class VideoPlayerFragment extends Fragment {
             return parentView;
 
         parentView = inflater.inflate(R.layout.fragment_video_player, container, false);
+        parentView.findViewById(R.id.closeBtn).setOnClickListener(clickListener);
         return parentView;
     }
 
@@ -118,10 +118,10 @@ public class VideoPlayerFragment extends Fragment {
 
     /**
      * Initialize Player and the resources
-     * */
+     */
     private void initializePlayer() {
 
-        simpleExoPlayerView =  parentView.findViewById(R.id.videoPlayerView);
+        simpleExoPlayerView = parentView.findViewById(R.id.videoPlayerView);
         simpleExoPlayerView.requestFocus();
 
         TrackSelection.Factory videoTrackSelectionFactory =
@@ -166,7 +166,7 @@ public class VideoPlayerFragment extends Fragment {
 
     /**
      * Release Player and resources
-     * */
+     */
     private void releasePlayer() {
         if (player != null) {
             shouldAutoPlay = player.getPlayWhenReady();
@@ -175,4 +175,16 @@ public class VideoPlayerFragment extends Fragment {
             trackSelector = null;
         }
     }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (R.id.closeBtn) {
+                case R.id.closeBtn:
+                    releasePlayer();
+                    activity.finish();
+                    break;
+            }
+        }
+    };
 }
