@@ -46,6 +46,8 @@ dependencies {
     //All Support Library dependencies//
     implementation "com.android.support:support-v4:${rootProject.ext.SupportLibVersion}"
     implementation "com.android.support:appcompat-v7:${rootProject.ext.SupportLibVersion}"
+    implementation "com.android.support:cardview-v7:${rootProject.ext.SupportLibVersion}"
+    implementation "com.android.support:design:${rootProject.ext.SupportLibVersion}"
 
     //Exo Player Library Dependency//
     implementation "com.google.android.exoplayer:exoplayer:${rootProject.ext.ExoPlayerLibVersion}"

@@ -37,10 +37,11 @@
             android:layout_height="match_parent"
             android:focusable="true" />
 
-       <include
-           android:id="@+id/overlayView"
-           android:visibility="gone"
-           layout="@layout/teams_view"/>
+        <include
+            android:id="@+id/overlayView"
+            layout="@layout/teams_view"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </FrameLayout>
 </LinearLayout>
