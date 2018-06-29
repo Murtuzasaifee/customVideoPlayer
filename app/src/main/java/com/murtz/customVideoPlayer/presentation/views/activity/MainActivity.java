@@ -1,15 +1,18 @@
 package com.murtz.customVideoPlayer.presentation.views.activity;
 
+/**
+ * Created by Murtuza.Saifee on 29-Jun-18.
+ */
+
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
 import com.murtz.customVideoPlayer.R;
+import com.murtz.customVideoPlayer.presentation.views.fragment.HomeFragment;
 
 import java.lang.ref.WeakReference;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity implements HomeFragment.FragmentInteractionListener{
 
     private WeakReference<MainActivity> mainActivityWR;
 
@@ -18,20 +21,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainActivityWR = new WeakReference<>(this);
-        findViewById(R.id.videoPlayerBtn).setOnClickListener(clickListener);
+        navigateToFragments(false, new HomeFragment(), HomeFragment.TAG);
     }
-
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            openVideoPlayer();
-        }
-    };
 
     /**
      * Opens Video Player Activity
      * */
-    private void openVideoPlayer() {
+    @Override
+    public void openVideoPlayer(String videoUrl) {
         Intent videoPlayerIntent = new Intent(mainActivityWR.get(), VideoPlayerActivity.class);
         startActivity(videoPlayerIntent);
     }
@@ -39,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        clickListener = null;
         mainActivityWR = null;
     }
 }

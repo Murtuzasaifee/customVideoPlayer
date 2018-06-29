@@ -1,5 +1,10 @@
 package com.murtz.customVideoPlayer.presentation.views.activity;
 
+/**
+ * Created by Murtuza.Saifee on 29-Jun-18.
+ */
+
+
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -66,14 +71,6 @@ public class VideoPlayerActivity extends Activity {
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
-    }
-
     /**
      * Initialize Player and the resources
      * */
@@ -106,6 +103,13 @@ public class VideoPlayerActivity extends Activity {
         });
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
 
     @Override
     public void onStop() {
