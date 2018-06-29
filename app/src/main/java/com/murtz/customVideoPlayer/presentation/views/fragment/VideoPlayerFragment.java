@@ -3,10 +3,13 @@ package com.murtz.customVideoPlayer.presentation.views.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +50,7 @@ public class VideoPlayerFragment extends Fragment {
     private View parentView;
     private BaseActivity activity;
     private FragmentInteractionListener listener;
+    private boolean isOverlayVisible;
 
     public VideoPlayerFragment() {
         // Required empty public constructor
@@ -96,9 +100,15 @@ public class VideoPlayerFragment extends Fragment {
             return parentView;
 
         parentView = inflater.inflate(R.layout.fragment_video_player, container, false);
+        setButtonListeners();
+        return parentView;
+    }
+
+    private void setButtonListeners() {
         parentView.findViewById(R.id.closeBtn).setOnClickListener(clickListener);
         parentView.findViewById(R.id.showListBtn).setOnClickListener(clickListener);
-        return parentView;
+        parentView.findViewById(R.id.homeTeamBtn).setOnClickListener(clickListener);
+        parentView.findViewById(R.id.awayTeamBtn).setOnClickListener(clickListener);
     }
 
     @Override
@@ -110,8 +120,7 @@ public class VideoPlayerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//            initializePlayer();
-        startPlayer();
+        playPausePlayer(true);
     }
 
     /**
@@ -146,20 +155,16 @@ public class VideoPlayerFragment extends Fragment {
         });
     }
 
-    private void playPausePlayer() {
-        if (player != null)
-            player.setPlayWhenReady(!player.getPlayWhenReady());
-    }
-
-    private void startPlayer() {
-        if (player != null)
-            player.setPlayWhenReady(true);
+    private void playPausePlayer(boolean isPlay) {
+        if (player != null) {
+            player.setPlayWhenReady(isPlay);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        playPausePlayer();
+        playPausePlayer(false);
     }
 
     @Override
@@ -190,9 +195,30 @@ public class VideoPlayerFragment extends Fragment {
                     break;
 
                 case R.id.showListBtn:
-//                    parentView.findViewById(R.id.overlayView).setVisibility(View.VISIBLE);
+                    showHideOverlay();
+                    break;
+
+                case R.id.homeTeamBtn:
+                    parentView.findViewById(R.id.homeTeamBtn).setBackgroundResource(R.drawable.round_border_fill);
+                    parentView.findViewById(R.id.awayTeamBtn).setBackgroundResource(R.drawable.round_border_hollow);
+                    break;
+
+                case R.id.awayTeamBtn:
+                    parentView.findViewById(R.id.homeTeamBtn).setBackgroundResource(R.drawable.round_border_hollow);
+                    parentView.findViewById(R.id.awayTeamBtn).setBackgroundResource(R.drawable.round_border_fill);
                     break;
             }
         }
     };
+
+    private void showHideOverlay() {
+        if (isOverlayVisible) {
+            playPausePlayer(true);
+            parentView.findViewById(R.id.overlayView).setVisibility(View.GONE);
+        } else {
+            playPausePlayer(false);
+            parentView.findViewById(R.id.overlayView).setVisibility(View.VISIBLE);
+        }
+        isOverlayVisible = !isOverlayVisible;
+    }
 }

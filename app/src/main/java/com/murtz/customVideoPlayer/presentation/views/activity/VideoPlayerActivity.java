@@ -7,6 +7,7 @@ package com.murtz.customVideoPlayer.presentation.views.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.murtz.customVideoPlayer.R;
 import com.murtz.customVideoPlayer.presentation.utils.AppConstants;
@@ -14,15 +15,17 @@ import com.murtz.customVideoPlayer.presentation.views.fragment.VideoPlayerFragme
 
 import java.lang.ref.WeakReference;
 
-public class VideoPlayerActivity extends BaseActivity {
+public class VideoPlayerActivity extends BaseActivity implements VideoPlayerFragment.FragmentInteractionListener{
 
     private WeakReference<VideoPlayerActivity> videoPlayerActivityWR;
+    private View rootContentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
         videoPlayerActivityWR = new WeakReference<>(this);
+        rootContentView = findViewById(R.id.rootContentView);
         navigateToFirstFrag();
     }
 
