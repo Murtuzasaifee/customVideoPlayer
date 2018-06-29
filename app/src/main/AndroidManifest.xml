@@ -19,7 +19,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.views.activity.VideoPlayerActivity" />
+        <activity android:name=".presentation.views.activity.VideoPlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:launchMode="singleTop"
+            android:theme="@style/PlayerTheme"/>
     </application>
 
 </manifest>
