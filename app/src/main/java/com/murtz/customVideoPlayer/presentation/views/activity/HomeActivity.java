@@ -7,12 +7,14 @@ package com.murtz.customVideoPlayer.presentation.views.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.murtz.customVideoPlayer.BuildConfig;
 import com.murtz.customVideoPlayer.R;
+import com.murtz.customVideoPlayer.presentation.utils.AppConstants;
 import com.murtz.customVideoPlayer.presentation.views.fragment.HomeFragment;
 
 import java.lang.ref.WeakReference;
 
-public class HomeActivity extends BaseActivity implements HomeFragment.FragmentInteractionListener{
+public class HomeActivity extends BaseActivity implements HomeFragment.FragmentInteractionListener {
 
     private WeakReference<HomeActivity> mainActivityWR;
 
@@ -26,10 +28,11 @@ public class HomeActivity extends BaseActivity implements HomeFragment.FragmentI
 
     /**
      * Opens Video Player Activity
-     * */
+     */
     @Override
     public void openVideoPlayer(String videoUrl) {
         Intent videoPlayerIntent = new Intent(mainActivityWR.get(), VideoPlayerActivity.class);
+        videoPlayerIntent.putExtra(AppConstants.VIDEO_URL, videoUrl);
         startActivity(videoPlayerIntent);
     }
 

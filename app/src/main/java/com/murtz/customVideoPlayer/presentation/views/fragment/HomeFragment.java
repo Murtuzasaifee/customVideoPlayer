@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.murtz.customVideoPlayer.BuildConfig;
 import com.murtz.customVideoPlayer.R;
 import com.murtz.customVideoPlayer.presentation.views.activity.BaseActivity;
 
@@ -70,7 +71,7 @@ public class HomeFragment extends Fragment {
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-           listener.openVideoPlayer("");
+           listener.openVideoPlayer(BuildConfig.VIDEO_URL);
         }
     };
 

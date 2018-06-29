@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 import com.murtz.customVideoPlayer.R;
+import com.murtz.customVideoPlayer.presentation.utils.AppConstants;
 import com.murtz.customVideoPlayer.presentation.views.activity.BaseActivity;
 
 /**
@@ -42,7 +43,7 @@ public class VideoPlayerFragment extends Fragment {
     private boolean shouldAutoPlay;
     private BandwidthMeter bandwidthMeter;
     private ImageView ivHideControllerButton;
-    private String videoUrl = "http://intigralvod1-vh.akamaihd.net/i/3rdparty/Season2017_2018/10_12_2017_Hilal_fath/Highlights/high_,256,512,768,1200,.mp4.csmil/master.m3u8";
+    private String videoUrl;
     private View parentView;
     private BaseActivity activity;
     private FragmentInteractionListener listener;
@@ -86,6 +87,10 @@ public class VideoPlayerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Bundle bundle = getArguments();
+        if (bundle != null)
+            videoUrl = bundle.getString(AppConstants.VIDEO_URL);
 
         //Avoid recreation of screen if already rendered//
         if (parentView != null)

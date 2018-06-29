@@ -5,27 +5,11 @@ package com.murtz.customVideoPlayer.presentation.views.activity;
  */
 
 
-import android.app.Activity;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
 
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.TransferListener;
-import com.google.android.exoplayer2.util.Util;
 import com.murtz.customVideoPlayer.R;
+import com.murtz.customVideoPlayer.presentation.utils.AppConstants;
 import com.murtz.customVideoPlayer.presentation.views.fragment.VideoPlayerFragment;
 
 import java.lang.ref.WeakReference;
@@ -39,7 +23,19 @@ public class VideoPlayerActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
         videoPlayerActivityWR = new WeakReference<>(this);
-        navigateToFragments(false,new VideoPlayerFragment(), VideoPlayerFragment.TAG);
+        navigateToFirstFrag();
+    }
+
+    private void navigateToFirstFrag() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String videoUrl = intent.getStringExtra(AppConstants.VIDEO_URL);
+            VideoPlayerFragment videoPlayerFragment = new VideoPlayerFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString(AppConstants.VIDEO_URL, videoUrl);
+            videoPlayerFragment.setArguments(bundle);
+            navigateToFragments(false, videoPlayerFragment, VideoPlayerFragment.TAG);
+        }
     }
 
     @Override
