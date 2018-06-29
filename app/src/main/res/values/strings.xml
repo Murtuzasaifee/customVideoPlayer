@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">CustomVideoPlayer</string>
+    <string name="app_name">Custom Video Player</string>
+    <string name="openVideoPlayer">Open Video Player</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="close">Close</string>
+    <string name="showList">Show List</string>
 </resources>
