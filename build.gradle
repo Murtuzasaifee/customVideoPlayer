@@ -25,3 +25,14 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext {
+    BuildToolsVersion = "27.0.3"
+    MinSdkVersion = 19
+    TargetSdkVersion = 27
+    CompileSdkVersion = 27
+    VersionName = "1.0.0"
+    VersionCode = 1
+    SupportLibVersion = "27.1.1"
+    ExoPlayerLibVersion = "r2.5.2"
+}

@@ -1,19 +1,41 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    flavorDimensions "default"
+    compileSdkVersion rootProject.ext.CompileSdkVersion
+    buildToolsVersion rootProject.ext.BuildToolsVersion
     defaultConfig {
         applicationId "com.murtz.customVideoPlayer"
-        minSdkVersion 19
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.MinSdkVersion
+        targetSdkVersion rootProject.ext.TargetSdkVersion
+        versionName rootProject.ext.VersionName
+        versionCode rootProject.ext.VersionCode
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    /**
+     * Other Product Flavours can be added to maintain different configuration. For Ex. - BaseUrl
+     * For Demo Video Url and Base Url is added same for all the flavours
+    * */
+    productFlavors {
+        dev {
+            buildConfigField "String", "VIDEO_URL", '"http://intigralvod1-vh.akamaihd.net/i/3rdparty/Season2017_2018/10_12_2017_Hilal_fath/Highlights/high_,256,512,768,1200,.mp4.csmil/master.m3u8"'
+            buildConfigField "String", "BASE_URL", '"https://devapi.dawriplus.com/"'
+        }
+        staging {
+            buildConfigField "String", "VIDEO_URL", '"http://intigralvod1-vh.akamaihd.net/i/3rdparty/Season2017_2018/10_12_2017_Hilal_fath/Highlights/high_,256,512,768,1200,.mp4.csmil/master.m3u8"'
+            buildConfigField "String", "BASE_URL", '"https://devapi.dawriplus.com/"'
+        }
+        production {
+            buildConfigField "String", "VIDEO_URL", '"http://intigralvod1-vh.akamaihd.net/i/3rdparty/Season2017_2018/10_12_2017_Hilal_fath/Highlights/high_,256,512,768,1200,.mp4.csmil/master.m3u8"'
+            buildConfigField "String", "BASE_URL", '"https://devapi.dawriplus.com/"'
         }
     }
 }
@@ -23,9 +45,31 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    testCompile 'junit:junit:4.12'
+
+    //All Support Library dependencies//
+    implementation "com.android.support:support-v4:${rootProject.ext.SupportLibVersion}"
+    implementation "com.android.support:appcompat-v7:${rootProject.ext.SupportLibVersion}"
+    implementation "com.android.support:cardview-v7:${rootProject.ext.SupportLibVersion}"
+    implementation "com.android.support:design:${rootProject.ext.SupportLibVersion}"
 
     //Exo Player Library Dependency//
-    implementation 'com.google.android.exoplayer:exoplayer:r2.5.2'
+    implementation "com.google.android.exoplayer:exoplayer:${rootProject.ext.ExoPlayerLibVersion}"
+
+    // Retrofit2, GSON  Library Dependencies//
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
+    /* Dependencies for Lombok. Automatic generation of getters, setters and constructors*/
+    compileOnly "org.projectlombok:lombok:1.16.20"
+    annotationProcessor 'org.projectlombok:lombok:1.16.20'
+
+    testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'design'
+        exclude group: 'com.android.support', module: 'recyclerview-v7'
+    }
 }
