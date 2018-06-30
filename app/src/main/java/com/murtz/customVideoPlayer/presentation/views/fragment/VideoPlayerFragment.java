@@ -43,6 +43,7 @@ import com.murtz.customVideoPlayer.presentation.utils.AppConstants;
 import com.murtz.customVideoPlayer.presentation.views.activity.BaseActivity;
 import com.murtz.customVideoPlayer.presentation.views.adapter.PlayersRVAdapter;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 import retrofit2.Call;
@@ -64,7 +65,7 @@ public class VideoPlayerFragment extends Fragment {
     private ImageView ivHideControllerButton;
     private String videoUrl;
     private View parentView;
-    private BaseActivity activity;
+    private WeakReference<BaseActivity> activityWR;
     private FragmentInteractionListener listener;
     private boolean isOverlayVisible;
     private Call lineAPICall;
@@ -101,12 +102,13 @@ public class VideoPlayerFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        activity = (BaseActivity) getActivity();
+        activityWR = new WeakReference<>((BaseActivity) getActivity());
 
         shouldAutoPlay = true;
         bandwidthMeter = new DefaultBandwidthMeter();
-        mediaDataSourceFactory = new DefaultDataSourceFactory(activity, Util.getUserAgent(activity, getString(R.string.app_name)), (TransferListener<? super DataSource>) bandwidthMeter);
+        mediaDataSourceFactory = new DefaultDataSourceFactory(activityWR.get(), Util.getUserAgent(activityWR.get(), getString(R.string.app_name)), (TransferListener<? super DataSource>) bandwidthMeter);
         ivHideControllerButton = parentView.findViewById(R.id.exo_controller);
+        initPlayersRV();
     }
 
     @Override
@@ -124,7 +126,6 @@ public class VideoPlayerFragment extends Fragment {
         parentView = inflater.inflate(R.layout.fragment_video_player, container, false);
         overlayView = parentView.findViewById(R.id.overlayView);
         setButtonListeners();
-        initPlayersRV();
         getLineups();
         return parentView;
     }
@@ -134,7 +135,7 @@ public class VideoPlayerFragment extends Fragment {
      */
     private void initPlayersRV() {
         playersRV = parentView.findViewById(R.id.playerRV);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(activity, 3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(activityWR.get(), 3);
         playersRV.setLayoutManager(gridLayoutManager);
     }
 
@@ -188,7 +189,7 @@ public class VideoPlayerFragment extends Fragment {
         trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
 
         //Creates Exo Player instance//
-        player = ExoPlayerFactory.newSimpleInstance(activity, trackSelector);
+        player = ExoPlayerFactory.newSimpleInstance(activityWR.get(), trackSelector);
         //Set Exo Player instance to the View
         simpleExoPlayerView.setPlayer(player);
         player.setPlayWhenReady(shouldAutoPlay);
@@ -206,6 +207,9 @@ public class VideoPlayerFragment extends Fragment {
         });
     }
 
+    /**
+     * Play or pause player
+     * */
     private void playPausePlayer(boolean isPlay) {
         if (player != null) {
             player.setPlayWhenReady(isPlay);
@@ -277,8 +281,8 @@ public class VideoPlayerFragment extends Fragment {
      * Show hide overlay view.
      */
     private void showHideOverlay() {
-        Animation slideInRight = AnimationUtils.loadAnimation(activity,R.anim.anim_slide_in_right);
-        Animation slideOutRight = AnimationUtils.loadAnimation(activity,R.anim.anim_slide_out_right);
+        Animation slideInRight = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_in_right);
+        Animation slideOutRight = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_out_right);
         slideInRight.setAnimationListener(animListener);
         slideOutRight.setAnimationListener(animListener);
 
@@ -297,6 +301,10 @@ public class VideoPlayerFragment extends Fragment {
         }
     }
 
+
+    /**
+     * Animation Listener for overlay
+     * */
     private Animation.AnimationListener animListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
@@ -318,6 +326,7 @@ public class VideoPlayerFragment extends Fragment {
 
         }
     };
+
 
     /**
      * Toggle the theme for home button and away button
@@ -343,7 +352,7 @@ public class VideoPlayerFragment extends Fragment {
      */
     private void closeScreen() {
         releasePlayer();
-        activity.finish();
+        activityWR.get().finish();
     }
 
 
@@ -356,12 +365,12 @@ public class VideoPlayerFragment extends Fragment {
             if (response.isSuccessful() && response.body() != null && response.body().getLineups().isSuccess())
                 lineupsModel = response.body();
             else
-                Toast.makeText(activity, getString(R.string.serviceNotAvailable), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activityWR.get(), getString(R.string.serviceNotAvailable), Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onFailure(Call<LineupsModel> call, Throwable t) {
-            Toast.makeText(activity, getString(R.string.serviceNotAvailable), Toast.LENGTH_SHORT).show();
+            Toast.makeText(activityWR.get(), getString(R.string.serviceNotAvailable), Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -375,5 +384,6 @@ public class VideoPlayerFragment extends Fragment {
 
         getLineupsAPICallback = null;
         clickListener = null;
+        activityWR = null;
     }
 }
