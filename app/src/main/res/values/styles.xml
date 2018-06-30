@@ -20,6 +20,11 @@
 
     <style name="AppButtonTheme" parent="Widget.AppCompat.Button">
         <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/round_border_fill</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingStart">20dp</item>
+        <item name="android:paddingEnd">20dp</item>
     </style>
 
 </resources>
