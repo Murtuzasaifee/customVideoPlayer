@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -70,6 +72,7 @@ public class VideoPlayerFragment extends Fragment {
     private LineupsModel lineupsModel;
     private RecyclerView playersRV;
     private PlayersRVAdapter playersRVAdapter;
+    private View overlayView;
 
     public VideoPlayerFragment() {
         // Required empty public constructor
@@ -119,6 +122,7 @@ public class VideoPlayerFragment extends Fragment {
             return parentView;
 
         parentView = inflater.inflate(R.layout.fragment_video_player, container, false);
+        overlayView = parentView.findViewById(R.id.overlayView);
         setButtonListeners();
         initPlayersRV();
         getLineups();
@@ -273,22 +277,47 @@ public class VideoPlayerFragment extends Fragment {
      * Show hide overlay view.
      */
     private void showHideOverlay() {
+        Animation slideInRight = AnimationUtils.loadAnimation(activity,R.anim.anim_slide_in_right);
+        Animation slideOutRight = AnimationUtils.loadAnimation(activity,R.anim.anim_slide_out_right);
+        slideInRight.setAnimationListener(animListener);
+        slideOutRight.setAnimationListener(animListener);
+
         if (isOverlayVisible) {
+            overlayView.startAnimation(slideOutRight);
             showListBtn.setText(R.string.showList);
             playPausePlayer(true);
-            parentView.findViewById(R.id.overlayView).setVisibility(View.GONE);
         } else {
             //perform click of home team button to set the home team list
             //when user first opens the overlay
             homeTeamBtn.performClick();
 
+            overlayView.startAnimation(slideInRight);
             showListBtn.setText(R.string.hideList);
             playPausePlayer(false);
-            parentView.findViewById(R.id.overlayView).setVisibility(View.VISIBLE);
         }
-        isOverlayVisible = !isOverlayVisible;
     }
 
+    private Animation.AnimationListener animListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if (isOverlayVisible)
+                overlayView.setVisibility(View.GONE);
+            else
+                overlayView.setVisibility(View.VISIBLE);
+
+            isOverlayVisible = !isOverlayVisible;
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    };
 
     /**
      * Toggle the theme for home button and away button
