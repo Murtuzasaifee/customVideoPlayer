@@ -11,20 +11,20 @@
     android:background="@color/greyTransparent">
 
 
-        <include
-            layout="@layout/tabs_button"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp" />
+    <include
+        layout="@layout/tabs_button"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp" />
 
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/playerRV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listitem="@layout/player_card" />
-    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/playerRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/player_card" />
+</LinearLayout>

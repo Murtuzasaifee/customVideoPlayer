@@ -71,8 +71,7 @@ public class VideoPlayerFragment extends Fragment {
     private Call lineAPICall;
     private Button showListBtn, homeTeamBtn, awayTeamBtn;
     private LineupsModel lineupsModel;
-    private RecyclerView playersRV;
-    private PlayersRVAdapter playersRVAdapter;
+    private RecyclerView playersRV, homePlayersRV, awayPlayersRV;
     private View overlayView;
 
     public VideoPlayerFragment() {
@@ -131,20 +130,43 @@ public class VideoPlayerFragment extends Fragment {
     }
 
     /**
-     * Initialize Recycler View of Players list.
+     * Initialize Recycler View of Players list for
+     * both mobile and tablet
      */
     private void initPlayersRV() {
-        playersRV = parentView.findViewById(R.id.playerRV);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(activityWR.get(), 3);
-        playersRV.setLayoutManager(gridLayoutManager);
+        if (!getResources().getBoolean(R.bool.isTablet)) {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(activityWR.get(), 3);
+            playersRV = parentView.findViewById(R.id.playerRV);
+            playersRV.setLayoutManager(gridLayoutManager);
+        } else {
+            GridLayoutManager homeGridLayoutManager = new GridLayoutManager(activityWR.get(), 2);
+            GridLayoutManager awayGridLayoutManager = new GridLayoutManager(activityWR.get(), 2);
+            homePlayersRV = parentView.findViewById(R.id.homePlayerRV);
+            awayPlayersRV = parentView.findViewById(R.id.awayPlayerRV);
+            homePlayersRV.setLayoutManager(homeGridLayoutManager);
+            awayPlayersRV.setLayoutManager(awayGridLayoutManager);
+        }
     }
 
     /**
      * Set the Players adapter depending on the type of data
      */
     private void setPlayersRVAdapter(List<PlayersModel> playersModelList) {
-        playersRVAdapter = new PlayersRVAdapter(playersModelList, clickListener);
+        PlayersRVAdapter playersRVAdapter = new PlayersRVAdapter(playersModelList, clickListener);
         playersRV.setAdapter(playersRVAdapter);
+    }
+
+
+    /**
+     * Set the Players adapter for both home and
+     * away teams for Tablets
+     */
+    private void setBothTeamsRVAdapter() {
+        PlayersRVAdapter homePlayerRVAdapter = new PlayersRVAdapter(lineupsModel.getLineups().getData().getHomeTeam().getPlayers(), clickListener);
+        homePlayersRV.setAdapter(homePlayerRVAdapter);
+
+        PlayersRVAdapter awayPlayerRVAdapter = new PlayersRVAdapter(lineupsModel.getLineups().getData().getAwayTeam().getPlayers(), clickListener);
+        awayPlayersRV.setAdapter(awayPlayerRVAdapter);
     }
 
     /**
@@ -156,11 +178,13 @@ public class VideoPlayerFragment extends Fragment {
         showListBtn = parentView.findViewById(R.id.showListBtn);
         showListBtn.setOnClickListener(clickListener);
 
-        homeTeamBtn = parentView.findViewById(R.id.homeTeamBtn);
-        homeTeamBtn.setOnClickListener(clickListener);
+        if (!getResources().getBoolean(R.bool.isTablet)){
+            homeTeamBtn = parentView.findViewById(R.id.homeTeamBtn);
+            homeTeamBtn.setOnClickListener(clickListener);
 
-        awayTeamBtn = parentView.findViewById(R.id.awayTeamBtn);
-        awayTeamBtn.setOnClickListener(clickListener);
+            awayTeamBtn = parentView.findViewById(R.id.awayTeamBtn);
+            awayTeamBtn.setOnClickListener(clickListener);
+        }
     }
 
     @Override
@@ -209,7 +233,7 @@ public class VideoPlayerFragment extends Fragment {
 
     /**
      * Play or pause player
-     * */
+     */
     private void playPausePlayer(boolean isPlay) {
         if (player != null) {
             player.setPlayWhenReady(isPlay);
@@ -281,6 +305,16 @@ public class VideoPlayerFragment extends Fragment {
      * Show hide overlay view.
      */
     private void showHideOverlay() {
+        if (!getResources().getBoolean(R.bool.isTablet))
+            showHideMobileOverlay();
+        else
+            showHideTabletOverlay();
+    }
+
+    /**
+     * Toggle Mobile Overlay View
+     * */
+    private void showHideMobileOverlay() {
         Animation slideInRight = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_in_right);
         Animation slideOutRight = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_out_right);
         slideInRight.setAnimationListener(animListener);
@@ -291,6 +325,7 @@ public class VideoPlayerFragment extends Fragment {
             showListBtn.setText(R.string.showList);
             playPausePlayer(true);
         } else {
+            overlayView.setVisibility(View.VISIBLE);
             //perform click of home team button to set the home team list
             //when user first opens the overlay
             homeTeamBtn.performClick();
@@ -301,10 +336,42 @@ public class VideoPlayerFragment extends Fragment {
         }
     }
 
+    /**
+     * Toggle Tablet Overlay View
+     * */
+    private void showHideTabletOverlay() {
+        Animation slideInRight = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_in_right);
+        Animation slideOutRight = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_out_right);
+        Animation slideInLeft = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_in_left);
+        Animation slideOutLeft = AnimationUtils.loadAnimation(activityWR.get(), R.anim.anim_slide_out_left);
+        slideInRight.setAnimationListener(animListener);
+        slideOutRight.setAnimationListener(animListener);
+        slideInLeft.setAnimationListener(animListener);
+        slideOutLeft.setAnimationListener(animListener);
+
+        View homeTeamView = parentView.findViewById(R.id.homeTeamView);
+        View awayTeamView = parentView.findViewById(R.id.awayTeamView);
+
+        if (isOverlayVisible) {
+            homeTeamView.startAnimation(slideOutLeft);
+            awayTeamView.startAnimation(slideOutRight);
+            showListBtn.setText(R.string.showList);
+            playPausePlayer(true);
+        } else {
+            overlayView.setVisibility(View.VISIBLE);
+            setBothTeamsRVAdapter();
+            homeTeamView.startAnimation(slideInLeft);
+            awayTeamView.startAnimation(slideInRight);
+            showListBtn.setText(R.string.hideList);
+            playPausePlayer(false);
+        }
+        isOverlayVisible = !isOverlayVisible;
+    }
+
 
     /**
      * Animation Listener for overlay
-     * */
+     */
     private Animation.AnimationListener animListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
@@ -385,5 +452,6 @@ public class VideoPlayerFragment extends Fragment {
         getLineupsAPICallback = null;
         clickListener = null;
         activityWR = null;
+        animListener = null;
     }
 }
