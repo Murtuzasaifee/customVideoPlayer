@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/greyTransparent"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <!--Home Team Player Layout-->
+    <LinearLayout
+        android:id="@+id/homeTeamView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/homeTeam"
+            android:textSize="18sp"
+            android:padding="15dp"
+            android:background="@drawable/round_border_fill"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/homePlayerRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/player_card" />
+
+    </LinearLayout>
+
+    <!--Divider-->
+    <View
+        android:layout_width="3dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark" />
+
+    <!--Away Team Player Layout-->
+    <LinearLayout
+        android:id="@+id/awayTeamView"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_weight="0.5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/awayTeam"
+            android:textSize="18sp"
+            android:padding="15dp"
+            android:background="@drawable/round_border_fill"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/awayPlayerRV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/player_card" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

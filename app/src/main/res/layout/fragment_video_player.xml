@@ -5,7 +5,9 @@
     android:orientation="vertical"
     tools:context="com.murtz.customVideoPlayer.presentation.views.fragment.VideoPlayerFragment">
 
+    <!--Top Bar Screen Buttons-->
     <RelativeLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,22 +29,27 @@
 
     </RelativeLayout>
 
+    <!--Video and Overlay Layout-->
     <FrameLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!--Exo Player Video View-->
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/videoPlayerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true" />
 
-        <View
+        <!--OverlayView-->
+        <include
             android:id="@+id/overlayView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_purple"
-            android:visibility="gone" />
+            layout="@layout/teams_view"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
     </FrameLayout>
+
 </LinearLayout>
 
