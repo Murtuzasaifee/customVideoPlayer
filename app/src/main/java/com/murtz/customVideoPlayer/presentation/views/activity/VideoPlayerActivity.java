@@ -18,14 +18,12 @@ import java.lang.ref.WeakReference;
 public class VideoPlayerActivity extends BaseActivity implements VideoPlayerFragment.FragmentInteractionListener{
 
     private WeakReference<VideoPlayerActivity> videoPlayerActivityWR;
-    private View rootContentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_player);
         videoPlayerActivityWR = new WeakReference<>(this);
-        rootContentView = findViewById(R.id.rootContentView);
         navigateToFirstFrag();
     }
 

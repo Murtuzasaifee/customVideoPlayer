@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">Custom Video Player</string>
     <string name="openVideoPlayer">Open Video Player</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="close">Close</string>
     <string name="showList">Show List</string>
     <string name="homeTeam">Home Team</string>
     <string name="awayTeam">Away Team</string>
+    <string name="hideList">Hide List</string>
+    <string name="serviceNotAvailable">Service not available. Please try again later.</string>
 </resources>

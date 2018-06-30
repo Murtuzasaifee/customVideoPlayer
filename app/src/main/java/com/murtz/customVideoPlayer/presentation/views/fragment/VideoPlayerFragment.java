@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -30,8 +32,14 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 import com.murtz.customVideoPlayer.R;
+import com.murtz.customVideoPlayer.datamodel.LineupsModel;
+import com.murtz.customVideoPlayer.network.Connection;
 import com.murtz.customVideoPlayer.presentation.utils.AppConstants;
 import com.murtz.customVideoPlayer.presentation.views.activity.BaseActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,6 +59,9 @@ public class VideoPlayerFragment extends Fragment {
     private BaseActivity activity;
     private FragmentInteractionListener listener;
     private boolean isOverlayVisible;
+    private Call lineAPICall;
+    private Button showListBtn, homeTeamBtn, awayTeamBtn;
+    private LineupsModel lineupsModel;
 
     public VideoPlayerFragment() {
         // Required empty public constructor
@@ -101,14 +112,21 @@ public class VideoPlayerFragment extends Fragment {
 
         parentView = inflater.inflate(R.layout.fragment_video_player, container, false);
         setButtonListeners();
+        getLineups();
         return parentView;
     }
 
     private void setButtonListeners() {
         parentView.findViewById(R.id.closeBtn).setOnClickListener(clickListener);
-        parentView.findViewById(R.id.showListBtn).setOnClickListener(clickListener);
-        parentView.findViewById(R.id.homeTeamBtn).setOnClickListener(clickListener);
-        parentView.findViewById(R.id.awayTeamBtn).setOnClickListener(clickListener);
+
+        showListBtn = parentView.findViewById(R.id.showListBtn);
+        showListBtn.setOnClickListener(clickListener);
+
+        homeTeamBtn = parentView.findViewById(R.id.homeTeamBtn);
+        homeTeamBtn.setOnClickListener(clickListener);
+
+        awayTeamBtn = parentView.findViewById(R.id.awayTeamBtn);
+        awayTeamBtn.setOnClickListener(clickListener);
     }
 
     @Override
@@ -199,13 +217,13 @@ public class VideoPlayerFragment extends Fragment {
                     break;
 
                 case R.id.homeTeamBtn:
-                    parentView.findViewById(R.id.homeTeamBtn).setBackgroundResource(R.drawable.round_border_fill);
-                    parentView.findViewById(R.id.awayTeamBtn).setBackgroundResource(R.drawable.round_border_hollow);
+                    homeTeamBtn.setBackgroundResource(R.drawable.round_border_fill);
+                    awayTeamBtn.setBackgroundResource(R.drawable.round_border_hollow);
                     break;
 
                 case R.id.awayTeamBtn:
-                    parentView.findViewById(R.id.homeTeamBtn).setBackgroundResource(R.drawable.round_border_hollow);
-                    parentView.findViewById(R.id.awayTeamBtn).setBackgroundResource(R.drawable.round_border_fill);
+                    homeTeamBtn.setBackgroundResource(R.drawable.round_border_hollow);
+                    awayTeamBtn.setBackgroundResource(R.drawable.round_border_fill);
                     break;
             }
         }
@@ -213,12 +231,51 @@ public class VideoPlayerFragment extends Fragment {
 
     private void showHideOverlay() {
         if (isOverlayVisible) {
+            showListBtn.setText(R.string.hideList);
             playPausePlayer(true);
             parentView.findViewById(R.id.overlayView).setVisibility(View.GONE);
         } else {
+            showListBtn.setText(R.string.showList);
             playPausePlayer(false);
             parentView.findViewById(R.id.overlayView).setVisibility(View.VISIBLE);
         }
         isOverlayVisible = !isOverlayVisible;
+    }
+
+    /**
+     * Api Call to get the lineups
+     */
+    private void getLineups() {
+        lineAPICall = Connection.getConnectionInstance().getLineups(getLineupsAPICallback);
+    }
+
+    /**
+     * Callback to handle the response of Lineups
+     */
+    private Callback<LineupsModel> getLineupsAPICallback = new Callback<LineupsModel>() {
+        @Override
+        public void onResponse(Call<LineupsModel> call, Response<LineupsModel> response) {
+            if (response.isSuccessful() && response.body() != null && response.body().getLineups().isSuccess())
+                lineupsModel = response.body();
+            else
+                Toast.makeText(activity, getString(R.string.serviceNotAvailable), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFailure(Call<LineupsModel> call, Throwable t) {
+            Toast.makeText(activity, getString(R.string.serviceNotAvailable), Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        //Cancel the API call if the request is in flight mode.//
+        if (lineAPICall != null)
+            lineAPICall.cancel();
+
+        getLineupsAPICallback = null;
+        clickListener = null;
     }
 }

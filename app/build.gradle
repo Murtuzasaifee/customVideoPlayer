@@ -22,17 +22,20 @@ android {
 
     /**
      * Other Product Flavours can be added to maintain different configuration. For Ex. - BaseUrl
-     * For Demo Video Url is added
+     * For Demo Video Url and Base Url is added same for all the flavours
     * */
     productFlavors {
         dev {
             buildConfigField "String", "VIDEO_URL", '"http://intigralvod1-vh.akamaihd.net/i/3rdparty/Season2017_2018/10_12_2017_Hilal_fath/Highlights/high_,256,512,768,1200,.mp4.csmil/master.m3u8"'
+            buildConfigField "String", "BASE_URL", '"https://devapi.dawriplus.com/"'
         }
         staging {
             buildConfigField "String", "VIDEO_URL", '"http://intigralvod1-vh.akamaihd.net/i/3rdparty/Season2017_2018/10_12_2017_Hilal_fath/Highlights/high_,256,512,768,1200,.mp4.csmil/master.m3u8"'
+            buildConfigField "String", "BASE_URL", '"https://devapi.dawriplus.com/"'
         }
         production {
             buildConfigField "String", "VIDEO_URL", '"http://intigralvod1-vh.akamaihd.net/i/3rdparty/Season2017_2018/10_12_2017_Hilal_fath/Highlights/high_,256,512,768,1200,.mp4.csmil/master.m3u8"'
+            buildConfigField "String", "BASE_URL", '"https://devapi.dawriplus.com/"'
         }
     }
 }
@@ -51,6 +54,16 @@ dependencies {
 
     //Exo Player Library Dependency//
     implementation "com.google.android.exoplayer:exoplayer:${rootProject.ext.ExoPlayerLibVersion}"
+
+    // Retrofit2, GSON  Library Dependencies//
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+
+    /* Dependencies for Lombok. Automatic generation of getters, setters and constructors*/
+    compileOnly "org.projectlombok:lombok:1.16.20"
+    annotationProcessor 'org.projectlombok:lombok:1.16.20'
 
     testCompile 'junit:junit:4.12'
 }
