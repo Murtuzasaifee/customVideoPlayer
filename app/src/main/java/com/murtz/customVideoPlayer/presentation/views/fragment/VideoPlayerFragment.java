@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +35,13 @@ import com.google.android.exoplayer2.upstream.TransferListener;
 import com.google.android.exoplayer2.util.Util;
 import com.murtz.customVideoPlayer.R;
 import com.murtz.customVideoPlayer.datamodel.LineupsModel;
+import com.murtz.customVideoPlayer.datamodel.PlayersModel;
 import com.murtz.customVideoPlayer.network.Connection;
 import com.murtz.customVideoPlayer.presentation.utils.AppConstants;
 import com.murtz.customVideoPlayer.presentation.views.activity.BaseActivity;
+import com.murtz.customVideoPlayer.presentation.views.adapter.PlayersRVAdapter;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +68,8 @@ public class VideoPlayerFragment extends Fragment {
     private Call lineAPICall;
     private Button showListBtn, homeTeamBtn, awayTeamBtn;
     private LineupsModel lineupsModel;
+    private RecyclerView playersRV;
+    private PlayersRVAdapter playersRVAdapter;
 
     public VideoPlayerFragment() {
         // Required empty public constructor
@@ -112,10 +120,31 @@ public class VideoPlayerFragment extends Fragment {
 
         parentView = inflater.inflate(R.layout.fragment_video_player, container, false);
         setButtonListeners();
+        initPlayersRV();
         getLineups();
         return parentView;
     }
 
+    /**
+     * Initialize Recycler View of Players list.
+     */
+    private void initPlayersRV() {
+        playersRV = parentView.findViewById(R.id.playerRV);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(activity, 3);
+        playersRV.setLayoutManager(gridLayoutManager);
+    }
+
+    /**
+     * Set the Players adapter depending on the type of data
+     */
+    private void setPlayersRVAdapter(List<PlayersModel> playersModelList) {
+        playersRVAdapter = new PlayersRVAdapter(playersModelList, clickListener);
+        playersRV.setAdapter(playersRVAdapter);
+    }
+
+    /**
+     * Setup listeners for buttons
+     */
     private void setButtonListeners() {
         parentView.findViewById(R.id.closeBtn).setOnClickListener(clickListener);
 
@@ -203,13 +232,15 @@ public class VideoPlayerFragment extends Fragment {
         }
     }
 
+    /**
+     * Click listeners of all the views
+     */
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.closeBtn:
-                    releasePlayer();
-                    activity.finish();
+                    closeScreen();
                     break;
 
                 case R.id.showListBtn:
@@ -217,30 +248,58 @@ public class VideoPlayerFragment extends Fragment {
                     break;
 
                 case R.id.homeTeamBtn:
-                    homeTeamBtn.setBackgroundResource(R.drawable.round_border_fill);
-                    awayTeamBtn.setBackgroundResource(R.drawable.round_border_hollow);
+                    if (lineupsModel != null)
+                        toggleTeams(R.drawable.round_border_fill,
+                                R.drawable.round_border_hollow,
+                                lineupsModel.getLineups().getData().getHomeTeam().getPlayers());
                     break;
 
                 case R.id.awayTeamBtn:
-                    homeTeamBtn.setBackgroundResource(R.drawable.round_border_hollow);
-                    awayTeamBtn.setBackgroundResource(R.drawable.round_border_fill);
+                    if (lineupsModel != null)
+                        toggleTeams(R.drawable.round_border_hollow,
+                                R.drawable.round_border_fill,
+                                lineupsModel.getLineups().getData().getAwayTeam().getPlayers());
+                    break;
+
+                case R.id.playerCard:
+                    showHideOverlay();
                     break;
             }
         }
     };
 
+
+    /**
+     * Show hide overlay view.
+     */
     private void showHideOverlay() {
         if (isOverlayVisible) {
-            showListBtn.setText(R.string.hideList);
+            showListBtn.setText(R.string.showList);
             playPausePlayer(true);
             parentView.findViewById(R.id.overlayView).setVisibility(View.GONE);
         } else {
-            showListBtn.setText(R.string.showList);
+            //perform click of home team button to set the home team list
+            //when user first opens the overlay
+            homeTeamBtn.performClick();
+
+            showListBtn.setText(R.string.hideList);
             playPausePlayer(false);
             parentView.findViewById(R.id.overlayView).setVisibility(View.VISIBLE);
         }
         isOverlayVisible = !isOverlayVisible;
     }
+
+
+    /**
+     * Toggle the theme for home button and away button
+     * And set the adapter with respective team data
+     */
+    private void toggleTeams(int homeBtnTheme, int awayBtnTheme, List<PlayersModel> playersList) {
+        homeTeamBtn.setBackgroundResource(homeBtnTheme);
+        awayTeamBtn.setBackgroundResource(awayBtnTheme);
+        setPlayersRVAdapter(playersList);
+    }
+
 
     /**
      * Api Call to get the lineups
@@ -248,6 +307,16 @@ public class VideoPlayerFragment extends Fragment {
     private void getLineups() {
         lineAPICall = Connection.getConnectionInstance().getLineups(getLineupsAPICallback);
     }
+
+
+    /**
+     * Release resources and close activity
+     */
+    private void closeScreen() {
+        releasePlayer();
+        activity.finish();
+    }
+
 
     /**
      * Callback to handle the response of Lineups

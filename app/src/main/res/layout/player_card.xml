@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@android:color/white"
-    app:cardCornerRadius="5dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="3dp"
     app:cardUseCompatPadding="true"
     tools:layout_width="180dp">
@@ -25,12 +25,12 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="55dp">
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/black_half_transparent" />
+                android:background="@color/blueTransparent" />
 
             <TextView
                 android:id="@+id/playerName"
